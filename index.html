@@ -55,7 +55,7 @@ xhr.onreadystatechange = function() {
         function showPosition(position) {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>  Latitude: <i>" + position.coords.latitude +
                 "</i><br>  Longitude: <i>" + position.coords.longitude + "</i>";
-            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.latitude, response.longitude);
+            var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
             distanceFromIP.innerHTML = "distance to IP location : " + diff + "km";
         }
 
