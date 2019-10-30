@@ -1,114 +1,91 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset='utf-8' />
-<title>Display a map</title>
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
-<style>
-</style>
+	<meta charset='utf-8' />
+	<title>Display a map</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+	<style>
+	</style>
 </head>
+
 <body>
+	<h1>IP and Geolocation information</h1>
+	<p id="deviceLocation"></p>
+	<p id="ipField"></p>
+	<p id="ipLocation"></p>
+	<p id="distanceFromIP"></p> <br> <br>
+	<div>
+		<div id='map' style='width: 500px; height: 300px;'></div>
+	</div>
+	<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoidWt1MjIiLCJhIjoiY2syZG54OG9lMDBvcjNtcWtrOW9uZnZqbyJ9.Snj6mNU0fpMjMJrmM6LPbA';
+	var ipApiURL = 'https://ipapi.co/json';
+	var deviceLocation = document.getElementById("deviceLocation");
+	var ipField = document.getElementById("ipField");
+	var ipLocation = document.getElementById("ipLocation");
+	var distanceFromIP = document.getElementById("distanceFromIP");
+	var ipLon = 0;
+	var ipLat = 0;
+	var geoLon = 0;
+	var geoLat = 0;
+	// as explained in https://www.movable-type.co.uk/scripts/latlong.html
+	function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+		var R = 6371; // earth radius in kilometers
+		var dLat = deg2rad(lat2 - lat1); // latitude delta
+		var dLon = deg2rad(lon2 - lon1); // longtitude delta
+		var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		var d = R * c;
+		return d;
+	}
 
-<h1>IP and Geolocation information</h1>
+	function deg2rad(deg) {
+		return deg * (Math.PI / 180)
+	}
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if(this.readyState == 4 && this.status == 200) {
+			var response = JSON.parse(this.responseText);
+			ipLat = response.latitude;
+			ipLon = response.longitude;
+			var map = new mapboxgl.Map({
+				container: 'map', // container id
+				style: 'mapbox://styles/mapbox/streets-v11',
+				center: [ipLon, ipLat], // starting position [lng, lat]
+				zoom: 12
+			});
+			ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
+			ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude + "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + response.longitude + "</i>&nbsp;[<font color='green'>OK</font>]";
+			if(navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition);
+			} else {
+				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]";
+				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location:</b> <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]"
+			}
 
-<p id="deviceLocation"></p>
-<p id="ipField"></p>
-<p id="ipLocation"></p>
-<p id="distanceFromIP"></p>
-<br>
-<br>
-<div><div id='map' style='width: 500px; height: 300px;'></div></div>
-  
-<script>
-mapboxgl.accessToken = 'pk.eyJ1IjoidWt1MjIiLCJhIjoiY2syZG54OG9lMDBvcjNtcWtrOW9uZnZqbyJ9.Snj6mNU0fpMjMJrmM6LPbA';
-var ipApiURL = 'https://ipapi.co/json';
-
-var deviceLocation = document.getElementById("deviceLocation");
-var ipField = document.getElementById("ipField");
-var ipLocation = document.getElementById("ipLocation");
-var distanceFromIP = document.getElementById("distanceFromIP");
-var ipLon = 0;
-var ipLat = 0;
-var geoLon = 0;
-var geoLat = 0;
-
-// as explained in https://www.movable-type.co.uk/scripts/latlong.html
-function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-    var R = 6371; // earth radius in kilometers
-    var dLat = deg2rad(lat2 - lat1); // latitude delta
-    var dLon = deg2rad(lon2 - lon1); // longtitude delta
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d;
-}
-
-function deg2rad(deg) {
-    return deg * (Math.PI / 180)
-}
-
-
-
-var xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        var response = JSON.parse(this.responseText);
-		ipLat = response.latitude;
-		ipLon = response.longitude;
-		
-		var map = new mapboxgl.Map({
-			container: 'map', // container id
-			style: 'mapbox://styles/mapbox/streets-v11',
-			center: [ipLon, ipLat], // starting position [lng, lat]
-			zoom: 10});
-	
-        ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
-		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
-                "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + response.longitude + "</i>&nbsp;[<font color='green'>OK</font>]";
-
-        if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]";
-            distanceFromIP.innerHTML = "<b>Distance from Geo to IP location:</b> <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]"
-        }
-
-		    function showPosition(position) {
+			function showPosition(position) {
 				geoLat = position.coords.latitude;
 				geoLon = position.coords.longitude;
-				map.fitBounds([[ipLon,ipLat], [position.coords.longitude,position.coords.latitude]], {padding: [100,100]});
-				var marker2 = new mapboxgl.Marker()
-				.setLngLat([position.coords.longitude, position.coords.latitude])
-				.addTo(map);
-				
-				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + Number((position.coords.latitude).toFixed(4)) +
-					"</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + Number((position.coords.longitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]";
+				map.fitBounds([
+					[ipLon, ipLat],
+					[position.coords.longitude, position.coords.latitude]
+				], {
+					padding: [100, 100]
+				});
+				var marker2 = new mapboxgl.Marker().setLngLat([position.coords.longitude, position.coords.latitude]).addTo(map);
+				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + Number((position.coords.latitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + Number((position.coords.longitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]";
 				var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
 				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location: </b><br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM &nbsp;[<font color='green'>OK</font>]";
-        }
-	
-
-
-			    var marker = new mapboxgl.Marker()
-				.setLngLat([ipLon, ipLat])
-				.addTo(map);
-				
-
-	}
-};
-
-
-
-
-
-xhr.open('GET', ipApiURL, true);
-xhr.send();
-</script>
-
+			}
+			var marker = new mapboxgl.Marker().setLngLat([ipLon, ipLat]).addTo(map);
+		}
+	};
+	xhr.open('GET', ipApiURL, true);
+	xhr.send();
+	</script>
 </body>
+
 </html>
