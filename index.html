@@ -7,8 +7,6 @@
 <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
 <style>
-body { margin:0; padding:0; }
-#map { position:absolute; top:0; bottom:0; width:100%; }
 </style>
 </head>
 <body>
@@ -21,7 +19,7 @@ body { margin:0; padding:0; }
 <p id="distanceFromIP"></p>
 <br>
 <br>
-<p><div id='map' style='width: 400px; height: 300px;'></div></p>
+<div><div id='map' style='width: 500px; height: 300px;'></div></div>
   
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoidWt1MjIiLCJhIjoiY2syZG54OG9lMDBvcjNtcWtrOW9uZnZqbyJ9.Snj6mNU0fpMjMJrmM6LPbA';
@@ -71,17 +69,21 @@ xhr.onreadystatechange = function() {
 				var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
 				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location: </b><br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM &nbsp;[<font color='green'>OK</font>]";
         }
-    }
+    var map = new mapboxgl.Map({
+	container: 'map', // container id
+	style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+	center: [23.901606, 55.31612], // starting position [lng, lat]
+	zoom: 5}); // starting zoom
+
+	map.fitBounds([
+		[position.coords.longitude, position.coords.latitude],
+		[response.longitude, response.latitude]
+	]);
+
+	}
 };
 xhr.open('GET', ipApiURL, true);
 xhr.send();
-	
-var map = new mapboxgl.Map({
-container: 'map', // container id
-style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-center: [-74.50, 40], // starting position [lng, lat]
-zoom: 9 // starting zoom
-});
 
 </script>
 
