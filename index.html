@@ -65,7 +65,7 @@ xhr.onreadystatechange = function() {
 			container: 'map', // container id
 			style: 'mapbox://styles/mapbox/streets-v11',
 			center: [ipLon, ipLat], // starting position [lng, lat]
-			zoom: 8});
+			zoom: 10});
 	
         ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
