@@ -29,6 +29,10 @@ var deviceLocation = document.getElementById("deviceLocation");
 var ipField = document.getElementById("ipField");
 var ipLocation = document.getElementById("ipLocation");
 var distanceFromIP = document.getElementById("distanceFromIP");
+var ipLon;
+var ipLat;
+var geoLon;
+var geoLat;
 
 // as explained in https://www.movable-type.co.uk/scripts/latlong.html
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -48,10 +52,18 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
+var map = new mapboxgl.Map({
+	container: 'map', // container id
+	style: 'mapbox://styles/mapbox/streets-v11',
+	center: [23.901606, 55.31612], // starting position [lng, lat]
+	zoom: 5});
+
 var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         var response = JSON.parse(this.responseText);
+		ipLat = response.lat;
+		ipLon = response.lon;
         ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
                 "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + response.longitude + "</i>&nbsp;[<font color='green'>OK</font>]";
@@ -64,22 +76,48 @@ xhr.onreadystatechange = function() {
         }
 
 		    function showPosition(position) {
+				geoLat = position.coords.latitude;
+				geoLon = position.coords.longitude;
 				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + Number((position.coords.latitude).toFixed(4)) +
 					"</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + Number((position.coords.longitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]";
 				var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
 				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location: </b><br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM &nbsp;[<font color='green'>OK</font>]";
         }
-    var map = new mapboxgl.Map({
-	container: 'map', // container id
-	style: 'mapbox://styles/mapbox/streets-v11'}); // starting zoom
-
+	
 	map.fitBounds([
-		[position.coords.longitude, position.coords.latitude],
-		[response.longitude, response.latitude]
+		[geoLon, geoLat],
+		[ipLon, ipLat]
 	]);
 
 	}
 };
+
+var geojson = {
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ipLon, ipLat]
+    },
+    properties: {
+      title: 'Mapbox',
+      description: 'IP location'
+    }
+  },
+  {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [geLon, geoLat]
+    },
+    properties: {
+      title: 'Mapbox',
+      description: 'Device location'
+    }
+  }]
+};
+
 xhr.open('GET', ipApiURL, true);
 xhr.send();
 
