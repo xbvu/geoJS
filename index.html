@@ -46,16 +46,18 @@ xhr.onreadystatechange = function() {
                 "</i><br>&nbsp;Longitude: <i>" + response.longtitude + "</i>";
 
         if (navigator.geolocation) {
-            deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>[<font color='green'>OK</font>]" + position.coords.latitude +
-                "</i><br>&nbsp;Longitude: <i>" + position.coords.longitude + "</i>[<font color='green'>OK</font>]";
-            var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longtitude);
-            distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM [<font color='green'>OK</font>]";
+		navigator.geolocation.getCurrentPosition(showPosition);
         } else {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>[<font color='red'>unavailable</font>]";
             distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp; none</i>[<font color='red'>unavailable</font>]";
         }
 
-
+	    function showPosition(position) {
+		deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>[<font color='green'>OK</font>]" + position.coords.latitude +
+			"</i><br>&nbsp;Longitude: <i>" + position.coords.longitude + "</i>[<font color='green'>OK</font>]";
+		var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longtitude);
+		distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM [<font color='green'>OK</font>]";
+        }
     }
 };
 xhr.open('GET', ipApiURL, true);
