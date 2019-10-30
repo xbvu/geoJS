@@ -43,7 +43,7 @@ xhr.onreadystatechange = function() {
         var response = JSON.parse(this.responseText);
         ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
-                "</i><br>&nbsp;Longitude: <i>" + response.longitude + "</i>";
+                "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>&nbsp;[<font color='green'>OK</font>]" + response.longitude + "</i>";
 
         if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(showPosition);
