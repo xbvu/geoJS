@@ -53,8 +53,8 @@ xhr.onreadystatechange = function() {
         }
 
 		    function showPosition(position) {
-				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + position.coords.latitude +
-					"</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + position.coords.longitude + "</i>&nbsp;[<font color='green'>OK</font>]";
+				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + Number((position.coords.latitude).toFixed(4)) +
+					"</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + Number((position.coords.longitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]";
 				var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
 				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM &nbsp;[<font color='green'>OK</font>]";
         }
