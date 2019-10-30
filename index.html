@@ -70,15 +70,17 @@ xhr.onreadystatechange = function() {
 				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location: </b><br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM &nbsp;[<font color='green'>OK</font>]";
         }
     var map = new mapboxgl.Map({
-	container: 'map', // container id
-	style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+	container: 'map',
+	style: 'mapbox://styles/mapbox/streets-v11',
 	center: [23.901606, 55.31612], // starting position [lng, lat]
-	zoom: 5}); // starting zoom
-
+	zoom: 5
 	map.fitBounds([
-		[position.coords.longitude, position.coords.latitude],
-		[response.longitude, response.latitude]
+	[position.coords.longitude, position.coords.latitude],
+	[response.longitude, response.latitude]
 	]);
+	});
+
+
 
 	}
 };
