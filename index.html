@@ -7,23 +7,67 @@
 
 <button onclick="getLocation()">Try It</button>
 
-<p id="demo"></p>
-
+<p id="deviceLocation"></p>
+<p id="ipField"></p>
+<p id="ipLocation"></p>
+<p id="distanceFromIP"></p>  
+  
+  
 <script>
-var x = document.getElementById("demo");
+var ipApiURL = 'http://ip-api.com/json/?fields=status,message,lat,lon';
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+var deviceLocation = document.getElementById("deviceLocation");
+var ipField = document.getElementById("ipField");
+var ipLocation = document.getElementById("ipLocation");
+var distanceFromIP = document.getElementById("distanceFromIP");
+
+// as explained in https://www.movable-type.co.uk/scripts/latlong.html
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // earth radius in kilometers
+    var dLat = deg2rad(lat2 - lat1); // latitude delta
+    var dLon = deg2rad(lon2 - lon1); // longtitude delta
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d;
 }
 
-function showPosition(position) {
-  x.innerHTML = "Latitude: " + position.coords.latitude + 
-  "<br>Longitude: " + position.coords.longitude;
+function deg2rad(deg) {
+    return deg * (Math.PI / 180)
 }
+
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var response = JSON.parse(this.responseText);
+        if (response.status !== 'success') {
+            console.log('query failed: ' + response.message);
+            return
+        }
+
+        ipField.innerHTML = response.query;
+		ipLocation.innerHTML = "<b>IP Location:</b><br>  Latitude: <i>" + response.lat +
+                "</i><br>  Longitude: <i>" + response.lon + "</i>";
+
+        if (navigator.geolocation) {
+            deviceLocation.innerHTML = "<b>Device Location:</b><br>  Latitude: <i>" + position.coords.latitude +
+                "</i><br>  Longitude: <i>" + position.coords.longitude + "</i>";
+            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.lat, response.lon);
+            distanceFromIP.innerHTML = "distance to IP location : " + diff + "km";
+        } else {
+            deviceLocation.innerHTML = "Geolocation is unavailable";
+        }
+
+
+    }
+};
+xhr.open('GET', ipApiURL, true);
+xhr.send();
+xhr.open('GET', endpoint, true);
+xhr.send();
 </script>
 
 </body>
