@@ -49,7 +49,7 @@ xhr.onreadystatechange = function() {
 			navigator.geolocation.getCurrentPosition(showPosition);
         } else {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]";
-            distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]";
+            distanceFromIP.innerHTML = "<b>Distance from Geo to IP location:</b> <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]"
         }
 
 		    function showPosition(position) {
