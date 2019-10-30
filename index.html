@@ -41,11 +41,6 @@ var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         var response = JSON.parse(this.responseText);
-        if (response.status !== 'success') {
-            console.log('query failed: ' + response.message);
-            return
-        }
-
         ipField.innerHTML = response.ip;
 		ipLocation.innerHTML = "<b>IP Location:</b><br>  Latitude: <i>" + response.latitude +
                 "</i><br>  Longitude: <i>" + response.longtitude + "</i>";
