@@ -81,7 +81,7 @@ xhr.onreadystatechange = function() {
 		    function showPosition(position) {
 				geoLat = position.coords.latitude;
 				geoLon = position.coords.longitude;
-				map.fitBounds([[ipLon,ipLat], [position.coords.longitude,position.coords.latitude]]);
+				map.fitBounds([[ipLon,ipLat], [position.coords.longitude,position.coords.latitude]], {padding: [100,100]});
 				var marker2 = new mapboxgl.Marker()
 				.setLngLat([position.coords.longitude, position.coords.latitude])
 				.addTo(map);
