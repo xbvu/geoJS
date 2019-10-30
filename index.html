@@ -52,11 +52,7 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180)
 }
 
-var map = new mapboxgl.Map({
-	container: 'map', // container id
-	style: 'mapbox://styles/mapbox/streets-v11',
-	center: [23.901606, 55.31612], // starting position [lng, lat]
-	zoom: 5});
+
 
 var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
@@ -65,6 +61,12 @@ xhr.onreadystatechange = function() {
 		ipLat = response.latitude;
 		ipLon = response.longitude;
 		
+		var map = new mapboxgl.Map({
+			container: 'map', // container id
+			style: 'mapbox://styles/mapbox/streets-v11',
+			center: [ipLon, ipLat], // starting position [lng, lat]
+			zoom: 8});
+	
         ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>&nbsp;[<font color='green'>OK</font>]";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
                 "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + response.longitude + "</i>&nbsp;[<font color='green'>OK</font>]";
@@ -79,7 +81,7 @@ xhr.onreadystatechange = function() {
 		    function showPosition(position) {
 				geoLat = position.coords.latitude;
 				geoLon = position.coords.longitude;
-				
+				map.fitBounds([[ipLon,ipLat], [position.coords.longitude,position.coords.latitude]]);
 				var marker2 = new mapboxgl.Marker()
 				.setLngLat([position.coords.longitude, position.coords.latitude])
 				.addTo(map);
