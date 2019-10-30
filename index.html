@@ -41,11 +41,6 @@ var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         var response = JSON.parse(this.responseText);
-        if (response.status !== 'success') {
-            console.log('query failed: ' + response.message);
-            return
-        }
-
         ipField.innerHTML = "<b>IP Address:</b><br><i>&nbsp;" + response.ip + "</i>[<font color='green'>OK</font>]";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>&nbsp;Latitude: <i>" + response.latitude +
                 "</i><br>&nbsp;Longitude: <i>" + response.longtitude + "</i>";
@@ -53,7 +48,7 @@ xhr.onreadystatechange = function() {
         if (navigator.geolocation) {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>[<font color='green'>OK</font>]" + position.coords.latitude +
                 "</i><br>&nbsp;Longitude: <i>" + position.coords.longitude + "</i>[<font color='green'>OK</font>]";
-            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.latitude, response.longtitude);
+            var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longtitude);
             distanceFromIP.innerHTML = "<b>Distance from Geo to IP location : <br><i>&nbsp;" + Number((diff).toFixed(2)) + "</i> KM [<font color='green'>OK</font>]";
         } else {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>[<font color='red'>unavailable</font>]";
