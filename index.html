@@ -3,7 +3,7 @@
 <html>
 <body>
 
-<p>Click the button to get your coordinates.</p>
+<h1>IP and Geolocation information</h1>
 
 <p id="deviceLocation"></p>
 <p id="ipField"></p>
@@ -41,14 +41,14 @@ var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         var response = JSON.parse(this.responseText);
-        ipField.innerHTML = response.ip;
+        ipField.innerHTML = "<b>IP:</b> </i>" + response.ip + "</i>";
 		ipLocation.innerHTML = "<b>IP Location:</b><br>  Latitude: <i>" + response.latitude +
-                "</i><br>  Longitude: <i>" + response.longtitude + "</i>";
+                "</i><br>  Longitude: <i>" + response.longitude + "</i>";
 
         if (navigator.geolocation) {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>  Latitude: <i>" + position.coords.latitude +
                 "</i><br>  Longitude: <i>" + position.coords.longitude + "</i>";
-            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.latitude, response.longtitude);
+            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.latitude, response.longitude);
             distanceFromIP.innerHTML = "distance to IP location : " + diff + "km";
         } else {
             deviceLocation.innerHTML = "Geolocation is unavailable";
