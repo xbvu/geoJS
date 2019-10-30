@@ -5,8 +5,6 @@
 
 <p>Click the button to get your coordinates.</p>
 
-<button onclick="getLocation()">Try It</button>
-
 <p id="deviceLocation"></p>
 <p id="ipField"></p>
 <p id="ipLocation"></p>
@@ -14,7 +12,7 @@
   
   
 <script>
-var ipApiURL = 'http://ip-api.com/json/?fields=status,message,lat,lon';
+var ipApiURL = 'https://ipapi.co/json';
 
 var deviceLocation = document.getElementById("deviceLocation");
 var ipField = document.getElementById("ipField");
@@ -48,14 +46,14 @@ xhr.onreadystatechange = function() {
             return
         }
 
-        ipField.innerHTML = response.query;
-		ipLocation.innerHTML = "<b>IP Location:</b><br>  Latitude: <i>" + response.lat +
-                "</i><br>  Longitude: <i>" + response.lon + "</i>";
+        ipField.innerHTML = response.ip;
+		ipLocation.innerHTML = "<b>IP Location:</b><br>  Latitude: <i>" + response.latitude +
+                "</i><br>  Longitude: <i>" + response.longtitude + "</i>";
 
         if (navigator.geolocation) {
             deviceLocation.innerHTML = "<b>Device Location:</b><br>  Latitude: <i>" + position.coords.latitude +
                 "</i><br>  Longitude: <i>" + position.coords.longitude + "</i>";
-            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.lat, response.lon);
+            var diff = getDistanceFromLatLonInKm(coords[i].lat, coords[i].lon, response.latitude, response.longtitude);
             distanceFromIP.innerHTML = "distance to IP location : " + diff + "km";
         } else {
             deviceLocation.innerHTML = "Geolocation is unavailable";
@@ -65,8 +63,6 @@ xhr.onreadystatechange = function() {
     }
 };
 xhr.open('GET', ipApiURL, true);
-xhr.send();
-xhr.open('GET', endpoint, true);
 xhr.send();
 </script>
 
