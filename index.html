@@ -72,7 +72,7 @@
 				map.fitBounds([
 					[ipLon, ipLat],
 					[position.coords.longitude, position.coords.latitude]
-				]);
+				], {padding: 100});
 				var marker2 = new mapboxgl.Marker().setLngLat([position.coords.longitude, position.coords.latitude]).addTo(map);
 				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>" + Number((position.coords.latitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]<br>&nbsp;Longitude: <i>" + Number((position.coords.longitude).toFixed(4)) + "</i>&nbsp;[<font color='green'>OK</font>]";
 				var diff = getDistanceFromLatLonInKm(position.coords.latitude, position.coords.longitude, response.latitude, response.longitude);
