@@ -86,10 +86,10 @@
 			}
 
 			function errorCallback(error) {
-				if(error.code == error.PERMISSION_DENIED) {
-					deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]";
-					distanceFromIP.innerHTML = "<b>Distance from Geo to IP location:</b> <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]"
-				}
+				//if(error.code == error.PERMISSION_DENIED) {
+				deviceLocation.innerHTML = "<b>Device Location:</b><br>&nbsp;Latitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]<br>&nbsp;Longitude: <i>none</i>&nbsp;[<font color='red'>unavailable</font>]";
+				distanceFromIP.innerHTML = "<b>Distance from Geo to IP location:</b> <br><i>&nbsp; none</i>&nbsp;[<font color='red'>unavailable</font>]"
+				//}
 			}
 			var marker = new mapboxgl.Marker().setLngLat([ipLon, ipLat]).addTo(map);
 		}
